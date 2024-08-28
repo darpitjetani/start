@@ -28,16 +28,14 @@ const crypto = require('crypto');
 const cors = require('cors');
 
 
-const allowedOrigins = [
-  'https://start-keo4-gk55rs00n-darpitjetanis-projects.vercel.app'
-];
-
 const corsOptions = {
-  origin: allowedOrigins,
-  credentials: true, // જો માન્યતા (authentication) જરૂરી હોય તો
+  origin: 'https://start-keo4-gk55rs00n-darpitjetanis-projects.vercel.app', // Your frontend URL
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+
+app.use('/api/v1/auth/register', require('./routes/authRoute'));
 
 
 // Function to generate a unique code
