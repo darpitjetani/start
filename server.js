@@ -25,6 +25,27 @@
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
+const cors = require('cors');
+
+
+const allowedOrigins = [
+  'https://start-keo4-gk55rs00n-darpitjetanis-projects.vercel.app'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+
 // Function to generate a unique code
 async function generateUniqueCode() {
   try {
