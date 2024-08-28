@@ -33,14 +33,8 @@ const allowedOrigins = [
 ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: allowedOrigins,
+  credentials: true, // જો માન્યતા (authentication) જરૂરી હોય તો
 };
 
 app.use(cors(corsOptions));
