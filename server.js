@@ -21,19 +21,13 @@
 
   app.use('/api', authRoutes);
 
-
-const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
-
-const cors = require('cors');
-
-
-app.use(cors({
+  app.use(cors({
     origin: 'https://digitalbusinessplan.in'
 }));
 
-app.use('/api/v1/auth/register', require('./routes/authRoute'));
 
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // Function to generate a unique code
 async function generateUniqueCode() {
@@ -175,6 +169,14 @@ app.post('/api/v1/auth/register', async (req, res) => {
           file: fileDetails
       });
   });
+
+
+  app.use(express.static(path.join(__dirname, 'client/build')));
+
+  app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/client/build/index.html'));
+});
+
 
 
   app.use("/api/v1/auth", authRoutes);
