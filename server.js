@@ -143,8 +143,6 @@ app.post('/api/v1/auth/register', async (req, res) => {
   }
 });
 
-              
-  app.use(cors());
   app.use(express.json());
 
   const storage = multer.diskStorage({
