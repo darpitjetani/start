@@ -21,23 +21,17 @@
 
   app.use('/api', authRoutes);
 
-  app.use(cors({
-    origin: 'https://digitalbusinessplan.in', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type'],
-  }));
+  const corsOptions = {
+    origin: 'https://start-keo4-gk55rs00n-darpitjetanis-projects.vercel.app', // Replace with your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true // If you need to support credentials (e.g., cookies)
+  };
+  
+  app.use(cors(corsOptions));
+
 
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-
-app.get('/api/user-count', async (req, res) => {
-  try {
-    const count = await User.countDocuments();
-    res.json({ count });
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred while counting users.' });
-  }
-});
 
 // Function to generate a unique code
 async function generateUniqueCode() {
@@ -147,6 +141,9 @@ app.post('/api/v1/auth/register', async (req, res) => {
   }
 });
 
+              
+  app.use(cors());
+
   app.use(express.json());
 
   const storage = multer.diskStorage({
@@ -181,6 +178,14 @@ app.post('/api/v1/auth/register', async (req, res) => {
   });
 
 
+  app.use(express.static(path.join(__dirname, 'client/build')));
+
+  app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/client/build/index.html'));
+});
+
+
+
   app.use("/api/v1/auth", authRoutes);
 
   app.get("/", (req, res) => {
@@ -192,3 +197,6 @@ app.post('/api/v1/auth/register', async (req, res) => {
   app.listen(PORT, () => {
       console.log(`Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`);
   });
+
+
+  // mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
