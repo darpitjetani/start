@@ -21,13 +21,19 @@
 
   app.use('/api', authRoutes);
 
-  const corsOptions = {
-    origin: 'https://start-keo4-gk55rs00n-darpitjetanis-projects.vercel.app', // Replace with your frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true // If you need to support credentials (e.g., cookies)
-  };
-  
-  app.use(cors(corsOptions));
+const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 
 const bcrypt = require('bcryptjs');
@@ -140,9 +146,6 @@ app.post('/api/v1/auth/register', async (req, res) => {
     }
   }
 });
-
-              
-  app.use(cors());
 
   app.use(express.json());
 
