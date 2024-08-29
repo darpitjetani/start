@@ -32,6 +32,15 @@ app.use(cors({
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
+app.get('/api/user-count', async (req, res) => {
+  try {
+    const count = await User.countDocuments(); // Count the number of documents in the User collection
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while counting users.' });
+  }
+});
+
 // Function to generate a unique code
 async function generateUniqueCode() {
   try {
