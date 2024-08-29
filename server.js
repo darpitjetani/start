@@ -28,13 +28,9 @@ const crypto = require('crypto');
 const cors = require('cors');
 
 
-const corsOptions = {
-  origin: 'https://start-keo4-gk55rs00n-darpitjetanis-projects.vercel.app', // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true, // If you need to allow cookies or other credentials
-};
-
-app.use(cors(corsOptions));
+  app.use(cors({
+    origin: 'https://digitalbusinessplan.in'
+}));
 
 app.use('/api/v1/auth/register', require('./routes/authRoute'));
 
