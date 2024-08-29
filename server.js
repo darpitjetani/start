@@ -21,8 +21,11 @@
 
   app.use('/api', authRoutes);
 
-  app.use(cors({
-    origin: 'https://digitalbusinessplan.in'
+
+app.use(cors({
+  origin: 'https://digitalbusinessplan.in', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
 }));
 
 
