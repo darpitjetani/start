@@ -21,20 +21,18 @@
 
   app.use('/api', authRoutes);
 
-
-app.use(cors({
-  origin: 'https://digitalbusinessplan.in', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-}));
-
+  app.use(cors({
+    origin: 'https://digitalbusinessplan.in', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+  }));
 
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
 app.get('/api/user-count', async (req, res) => {
   try {
-    const count = await User.countDocuments(); // Count the number of documents in the User collection
+    const count = await User.countDocuments();
     res.json({ count });
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while counting users.' });
@@ -182,6 +180,7 @@ app.post('/api/v1/auth/register', async (req, res) => {
       });
   });
 
+
   app.use("/api/v1/auth", authRoutes);
 
   app.get("/", (req, res) => {
@@ -193,6 +192,3 @@ app.post('/api/v1/auth/register', async (req, res) => {
   app.listen(PORT, () => {
       console.log(`Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`);
   });
-
-
-  // mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
