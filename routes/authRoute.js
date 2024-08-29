@@ -47,13 +47,13 @@ router.patch('/update-status/:id', async (req, res) => {
     }
   });
 
-  router.get('/user-count', async (req, res) => {
-    try {
-      const count = await User.countDocuments(); // Count the number of documents in the User collection
-      res.json({ count });
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while counting users.' });
-    }
-  });
+router.get('/user-count', async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while counting users.' });
+  }
+});
 
 module.exports = router;
