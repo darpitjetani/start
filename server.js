@@ -29,7 +29,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Your routes and other middleware
 app.get('/api/user-count', async (req, res) => {
   try {
     const count = await User.countDocuments();
@@ -38,6 +37,8 @@ app.get('/api/user-count', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while counting users.' });
   }
 });
+
+app.options('*', cors());
 
 
 const bcrypt = require('bcryptjs');
