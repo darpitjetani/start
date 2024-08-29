@@ -24,16 +24,20 @@
 const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: 'https://digitalbusinessplan.in',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Your routes and other middleware
+app.get('/api/user-count', async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while counting users.' });
+  }
+});
 
 
 const bcrypt = require('bcryptjs');
