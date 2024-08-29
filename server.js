@@ -29,7 +29,7 @@ const cors = require('cors');
 
 
 app.use(cors({
-    origin: ['https://digitalbusinessplan.in', 'https://start-keo4.onrender.com']
+    origin: 'https://digitalbusinessplan.in'
 }));
 
 app.use('/api/v1/auth/register', require('./routes/authRoute'));
