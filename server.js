@@ -32,7 +32,7 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 app.use('/api', authRoutes);
-app.use("/api/v1/auth", authRoutes);
+
 
 app.get('/api/user-count', async (req, res) => {
   try {
@@ -187,6 +187,8 @@ app.post('/api/v1/auth/register', async (req, res) => {
           file: fileDetails
       });
   });
+
+app.use("/api/v1/auth", authRoutes);
 
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
