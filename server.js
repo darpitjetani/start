@@ -23,11 +23,14 @@
 
 const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
 
-app.use(cors({
+const corsOptions = {
   origin: 'https://digitalbusinessplan.in',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+
+app.use(cors(corsOptions));
 
 app.get('/api/user-count', async (req, res) => {
   try {
