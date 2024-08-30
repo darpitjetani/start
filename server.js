@@ -19,8 +19,6 @@
   app.use(bodyParser.json())
   app.use(express.static('public'));
 
-  app.use('/api', authRoutes);
-
 const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
 
 const corsOptions = {
@@ -31,6 +29,10 @@ const corsOptions = {
 
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+app.use('/api', authRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 app.get('/api/user-count', async (req, res) => {
   try {
@@ -40,8 +42,6 @@ app.get('/api/user-count', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while counting users.' });
   }
 });
-
-app.options('*', cors());
 
 
 const bcrypt = require('bcryptjs');
@@ -187,9 +187,6 @@ app.post('/api/v1/auth/register', async (req, res) => {
           file: fileDetails
       });
   });
-
-
-  app.use("/api/v1/auth", authRoutes);
 
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
