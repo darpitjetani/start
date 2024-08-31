@@ -56,4 +56,13 @@ router.get('/user-count', async (req, res) => {
   }
 });
 
+ router.get('/last-three-users', async (req, res) => {
+    try {
+      const users = await User.find().sort({ _id: -1 }).limit(3); 
+      res.json(users);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
 module.exports = router;
