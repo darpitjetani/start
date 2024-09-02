@@ -201,30 +201,11 @@ const JWT = require("jsonwebtoken");
       error,
     });
   }
-};
-
-const getUsersWithReferenceCount = async (req, res) => {
-  try {
-    const users = await User.find(); // Fetch all users
-
-    // For each user, calculate the number of other users who registered using their reference code
-    const usersWithCounts = await Promise.all(users.map(async (user) => {
-      const referenceCount = await User.countDocuments({ referenceCode: user.code });
-      return {
-        ...user.toObject(),
-        referenceCount
-      };
-    }));
-
-    res.json(usersWithCounts);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+}; 
 
 
 
 
-module.exports = { registerController, loginController, testController, forgotPasswordController, getAllUserController, getUsersWithReferenceCount};
+module.exports = { registerController, loginController, testController, forgotPasswordController, getAllUserController};
 
 
