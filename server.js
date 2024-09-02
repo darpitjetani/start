@@ -191,6 +191,30 @@ app.post('/api/v1/auth/register', async (req, res) => {
 
 app.use("/api/v1/auth", authRoutes);
 
+app.get('/api/users', async (req, res) => {
+  try {
+      // Fetch all users
+      const users = await User.find();
+
+      // Calculate reference count for each user
+      const usersWithReferenceCount = await Promise.all(users.map(async (user) => {
+          // Count how many users have this user's code as their reference
+          const referenceCount = await User.countDocuments({ referenceCode: user.code });
+
+          return {
+              firstname: user.firstname,
+              lastname: user.lastname,
+              referenceCount, // Include the reference count
+          };
+      }));
+
+      res.json(usersWithReferenceCount);
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Server Error');
+  }
+});
+
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
   });
