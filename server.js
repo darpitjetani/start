@@ -32,6 +32,8 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 app.use('/api', authRoutes);
+app.use('/api/user', authRoutes);
+
 
 
 app.get('/api/user-count', async (req, res) => {
