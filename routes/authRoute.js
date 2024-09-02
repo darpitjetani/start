@@ -65,4 +65,7 @@ router.get('/user-count', async (req, res) => {
   }
 });
 
+// Your route might look something like this:
+router.get('/api/users', getUsersWithReferenceCount);
+
 module.exports = router;
