@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerController, loginController, testController, forgotPasswordController, getAllUserController } = require('../controllers/authController');
+const { registerController, loginController, testController, forgotPasswordController, getAllUserController, getUsersWithReferenceCount } = require('../controllers/authController');
 const { requireSignIn, isAdmin } = require('../middlewares/authMiddleware');
 const User = require('../models/userModel');
 
