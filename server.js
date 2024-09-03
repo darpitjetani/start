@@ -19,6 +19,8 @@
   app.use(bodyParser.json())
   app.use(express.static('public'));
 
+app.use('/Images', express.static(path.join(__dirname, 'public/Images')));
+
 const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
 
 const corsOptions = {
@@ -170,7 +172,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const uniqueFilename = `${Date.now()}_${file.originalname}`;
         cb(null, uniqueFilename);
-        req.body.photoURL = `/Images/${uniqueFilename}`; // Save the relative URL path
+        req.body.photoURL = `/Images/${uniqueFilename}`; // Save relative path
     }
 });
 
@@ -217,8 +219,6 @@ app.get('/api/users', async (req, res) => {
       res.status(500).send('Server Error');
   }
 });
-
-app.use('/Images', express.static(path.join(__dirname, 'public/Images')));
 
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
