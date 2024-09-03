@@ -158,19 +158,22 @@ app.post('/api/v1/auth/register', async (req, res) => {
 
   app.use(express.json());
 
-  const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-          const dir = path.join(__dirname, 'public', 'Images');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const dir = path.join(__dirname, 'public', 'Images');
 
-          if (!fs.existsSync(dir)) {
-              fs.mkdirSync(dir, { recursive: true }); 
-          }
-          cb(null, dir);
-      }, 
-      filename: function (req, file, cb) { 
-          cb(null, `${Date.now()}_${file.originalname}`);
-      }
-  });
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueFilename = `${Date.now()}_${file.originalname}`;
+        cb(null, uniqueFilename);
+        req.body.photoURL = `/Images/${uniqueFilename}`; // Save the relative URL path
+    }
+});
+
       
   const upload = multer({ storage });
 
@@ -214,6 +217,8 @@ app.get('/api/users', async (req, res) => {
       res.status(500).send('Server Error');
   }
 });
+
+app.use('/Images', express.static(path.join(__dirname, 'public/Images')));
 
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
