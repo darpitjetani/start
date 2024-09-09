@@ -162,58 +162,58 @@ app.post('/api/v1/auth/register', async (req, res) => {
 
   app.use(express.json());
 
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         const dir = path.join(__dirname, 'public', 'Images');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const dir = path.join(__dirname, 'public', 'Images');
 
-//         if (!fs.existsSync(dir)) {
-//             fs.mkdirSync(dir, { recursive: true });
-//         }
-//         cb(null, dir);
-//     },
-//     filename: function (req, file, cb) {
-//         const uniqueFilename = `${Date.now()}_${file.originalname}`;
-//         cb(null, uniqueFilename);
-//         req.body.photoURL = `/Images/${uniqueFilename}`; // Save relative path
-//     }
-// });
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueFilename = `${Date.now()}_${file.originalname}`;
+        cb(null, uniqueFilename);
+        req.body.photoURL = `/Images/${uniqueFilename}`; // Save relative path
+    }
+});
 
       
-//   const upload = multer({ storage });
+  const upload = multer({ storage });
 
-//   app.post('/upload', upload.single('file'), (req, res) => {
-//       console.log("Body:", req.body);
-//       console.log("File:", req.file);
-//       const fileDetails = { 
-//           originalname: req.file.originalname,
-//           mimetype: req.file.mimetype,
-//           size: req.file.size,
-//           path: req.file.path,
-//       };  
-//       res.json({
-//           message: 'File uploaded successfully',
-//           file: fileDetails
-//       });
-//   });
+  app.post('/upload', upload.single('file'), (req, res) => {
+      console.log("Body:", req.body);
+      console.log("File:", req.file);
+      const fileDetails = { 
+          originalname: req.file.originalname,
+          mimetype: req.file.mimetype,
+          size: req.file.size,
+          path: req.file.path,
+      };  
+      res.json({
+          message: 'File uploaded successfully',
+          file: fileDetails
+      });
+  });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/Images');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'public/Images');
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
+//   }
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
-// Route to handle image upload
-app.post('/upload', upload.single('photo'), (req, res) => {
-  const photoPath = `/Images/${req.file.filename}`;
-  // Save photoPath in the database
-  res.json({ message: 'Image uploaded successfully', path: photoPath });
-});
-app.use('/public', express.static('public'));
+// // Route to handle image upload
+// app.post('/upload', upload.single('photo'), (req, res) => {
+//   const photoPath = `/Images/${req.file.filename}`;
+//   // Save photoPath in the database
+//   res.json({ message: 'Image uploaded successfully', path: photoPath });
+// });
+// app.use('/public', express.static('public'));
 
 
 app.use("/api/v1/auth", authRoutes);
