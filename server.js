@@ -196,6 +196,17 @@ const storage = multer.diskStorage({
       });
   });
 
+app.post('/uploadAadhaar', (req, res) => {
+  upload(req, res, function (err) {
+      if (err) {
+          console.error('Error uploading Aadhaar photo:', err);
+          return res.status(500).send("Error uploading file.");
+      }
+      const filePath = `/Images/${req.file.filename}`;
+      res.json({ message: "File uploaded successfully", file: { path: filePath } });
+  });
+});
+
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     cb(null, 'public/Images');
