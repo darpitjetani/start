@@ -70,12 +70,16 @@ router.get('/user-count', async (req, res) => {
 router.get('/api/referred-users/:referenceCode', async (req, res) => {
   try {
     const users = await User.find({ referenceCode: req.params.referenceCode }).select('firstname lastname email');
+    if (users.length === 0) {
+      return res.status(404).json({ message: 'No users registered with this reference code.' });
+    }
     res.json(users);
   } catch (error) {
     console.error('Error fetching referred users:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 
 module.exports = router;
