@@ -253,6 +253,16 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
+app.get('/api/v1/users', async (req, res) => {
+  try {
+    const users = await User.find(); // Adjust according to your database query
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch users' });
+  }
+});
+
+
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
   });
