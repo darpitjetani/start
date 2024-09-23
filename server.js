@@ -49,7 +49,7 @@ async function generateUniqueCode() {
 // User Registration Endpoint
 app.post('/api/v1/auth/register', async (req, res) => {
   try {
-    const { firstname, middlename, lastname, address, aadhaar, pan, photo, aadhaarPhoto, email, mobile, password, referenceCode } = req.body;
+    const { firstname, middlename, lastname, address, aadhaar, pan, photo, email, mobile, password, referenceCode } = req.body;
 
     console.log('Request Body:', req.body);
 
@@ -72,7 +72,6 @@ app.post('/api/v1/auth/register', async (req, res) => {
         aadhaar,
         pan,
         photo,
-        aadhaarPhoto,
         email,
         mobile,
         password: hashedPassword,
@@ -118,7 +117,6 @@ app.post('/api/v1/auth/register', async (req, res) => {
         aadhaar,
         pan,
         photo,
-        aadhaarPhoto,
         email,
         mobile,
         password: hashedPassword,
