@@ -20,7 +20,8 @@ app.use(bodyParser.json())
 app.use(express.static('public'));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+app.use('/Images', express.static(path.join(__dirname, 'public/Images')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/public', express.static('public'));
 
 
