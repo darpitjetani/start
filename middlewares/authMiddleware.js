@@ -2,19 +2,32 @@ const JWT = require ("jsonwebtoken");
 const userModel = require ("../models/userModel.js");
 
 //Protected Routes token base
- const requireSignIn = async (req, res, next) => {
-  try {
-    const decode = JWT.verify(
-      req.headers.authorization,
-      process.env.JWT_SECRET
-    );
-    req.user = decode;
-    next();
-  } catch (error) {
-    console.log(error);
+//  const requireSignIn = async (req, res, next) => {
+//   try {
+//     const decode = JWT.verify(
+//       req.headers.authorization,
+//       process.env.JWT_SECRET
+//     );
+//     req.user = decode;
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+   const requireSignIn = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from the header
+  if (!token) {
+      return res.status(401).send({ message: "No token provided" });
   }
+  JWT.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+          return res.status(401).send({ message: "Invalid token" });
+      }
+      req.user = decoded; // Attach user info to the request
+      next();
+  });
 };
-   
+
 //admin acceess
  const isAdmin = async (req, res, next) => {
   try {
