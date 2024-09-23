@@ -2,18 +2,32 @@ const JWT = require ("jsonwebtoken");
 const userModel = require ("../models/userModel.js");
 
 //Protected Routes token base
- const requireSignIn = async (req, res, next) => {
-  try {
-    const decode = JWT.verify(
-      req.headers.authorization,
-      process.env.JWT_SECRET
-    );
-    req.user = decode;
-    next();
-  } catch (error) {
-    console.log(error);
+const requireSignIn = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader) {
+    return res.status(401).json({ error: "Authorization header missing" });
   }
+
+  const token = authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Token missing" });
+  }
+
+  console.log("Token received:", token); // Log the token for debugging
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      console.error("Token verification failed:", err.message); // Log verification error
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
+
+    req.user = decoded; // Store decoded token
+    next();
+  });
 };
+
    
 //admin acceess
  const isAdmin = async (req, res, next) => {
