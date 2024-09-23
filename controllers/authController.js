@@ -135,6 +135,7 @@ const JWT = require("jsonwebtoken");
         email: user.email,
         mobile: user.mobile,
         code: user.code,
+        role: user.role,
       },
       token,
     });
