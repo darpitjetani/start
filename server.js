@@ -26,6 +26,7 @@ app.use('/public', express.static('public'));
 
 
 
+
 const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
 
 const corsOptions = {
