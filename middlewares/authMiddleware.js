@@ -2,32 +2,18 @@ const JWT = require ("jsonwebtoken");
 const userModel = require ("../models/userModel.js");
 
 //Protected Routes token base
-const requireSignIn = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader) {
-    return res.status(401).json({ error: "Authorization header missing" });
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: "Token missing" });
-  }
-
-  console.log("Token received:", token); // Log the token for debugging
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      console.error("Token verification failed:", err.message); // Log verification error
-      return res.status(401).json({ error: "Invalid or expired token" });
-    }
-
-    req.user = decoded; // Store decoded token
+ const requireSignIn = async (req, res, next) => {
+  try {
+    const decode = JWT.verify(
+      req.headers.authorization,
+      process.env.JWT_SECRET
+    );
+    req.user = decode;
     next();
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
-
    
 //admin acceess
  const isAdmin = async (req, res, next) => {
@@ -51,5 +37,19 @@ const requireSignIn = (req, res, next) => {
   }
 };
 
+const authenticate = (req, res, next) => {
+  // Assuming you use JWT or similar
+  const token = req.header('x-auth-token');
+  if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
 
-module.exports = { requireSignIn , isAdmin};
+  try {
+    const decoded = jwt.verify(token, 'YOUR_SECRET_KEY');
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};
+
+
+module.exports = { requireSignIn , isAdmin, authenticate};
