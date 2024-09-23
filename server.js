@@ -46,95 +46,91 @@ async function generateUniqueCode() {
 }
 
 
-// User Registration Endpoint
 app.post('/api/v1/auth/register', async (req, res) => {
-  try {
-    const { firstname, middlename, lastname, address, aadhaar, pan, photo, email, mobile, password, referenceCode } = req.body;
+try {
+  const { firstname, middlename, lastname, address, aadhaar, pan, photo, email, mobile, password, referenceCode } = req.body;
 
-    console.log('Request Body:', req.body);
+  console.log('Request Body:', req.body);
 
-    // Check if any user exists in the database
-    const userCount = await User.countDocuments();
-    console.log('User Count:', userCount);
-    if (!aadhaarPhoto) {
-      return res.status(400).json({ message: 'Aadhaar card photo is required' });
-  }
+  // Check if any user exists in the database
+  const userCount = await User.countDocuments();
+  console.log('User Count:', userCount);
 
-    // First user registration without reference code
-    if (userCount === 0) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const newUser = new User({
-        firstname,
-        middlename,
-        lastname,
-        address,
-        aadhaar,
-        pan,
-        photo,
-        email,
-        mobile,
-        password: hashedPassword,
-        code: "DBP-1101",
-        referenceCode: "N/A"
-      });
-
-      await newUser.save();
-
-      return res.status(201).json({ message: 'First user registered successfully', code: "DBP-1101" });
-    }
-
-    // Validate if the reference code exists and is valid for subsequent users
-    const referrer = await User.findOne({ code: referenceCode });
-    console.log('Referrer:', referrer);
-
-    if (!referrer) {
-      return res.status(400).json({ message: 'Invalid reference code. You cannot register without a valid reference code.' });
-    }
-
-    // Check if the email or mobile is already registered
-    const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
-    console.log('Existing User:', existingUser);
-
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email or mobile is already registered.' });
-    }
-
-    // Hash the password before saving
+  // First user registration without reference code
+  if (userCount === 0) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('Hashed Password:', hashedPassword);
 
-    // Generate a unique code for the new user
-    const code = await generateUniqueCode();
-    console.log('Generated Code:', code);
-
-    // Create and save new user
     const newUser = new User({
       firstname,
-        middlename,
-        lastname,
-        address,
-        aadhaar,
-        pan,
-        photo,
-        email,
-        mobile,
-        password: hashedPassword,
-        code,
-        referenceCode
+      middlename,
+      lastname,
+      address,
+      aadhaar,
+      pan,
+      photo,
+      email,
+      mobile,
+      password: hashedPassword,
+      code: "DBP-1101",
+      referenceCode: "N/A"
     });
 
     await newUser.save();
 
-    res.status(201).json({ message: 'User registered successfully', code });
-  } catch (error) {
-    console.error('Error registering user:', error);
-    if (error.code === 11000) {
-      res.status(400).json({ message: 'Same aadhar and pan number' });
-    } else {
-      res.status(500).json({ message: 'Server error' });
-    }
+    return res.status(201).json({ message: 'First user registered successfully', code: "DBP-1101" });
   }
+
+  // Validate if the reference code exists and is valid for subsequent users
+  const referrer = await User.findOne({ code: referenceCode });
+  console.log('Referrer:', referrer);
+
+  if (!referrer) {
+    return res.status(400).json({ message: 'Invalid reference code. You cannot register without a valid reference code.' });
+  }
+
+  // Check if the email or mobile is already registered
+  const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
+  console.log('Existing User:', existingUser);
+
+  if (existingUser) {
+    return res.status(400).json({ message: 'Email or mobile is already registered.' });
+  }
+
+  // Hash the password before saving
+  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log('Hashed Password:', hashedPassword);
+
+  // Generate a unique code for the new user
+  const code = await generateUniqueCode();
+  console.log('Generated Code:', code);
+
+  // Create and save new user
+  const newUser = new User({
+    firstname,
+      middlename,
+      lastname,
+      address,
+      aadhaar,
+      pan,
+      photo,
+      email,
+      mobile,
+      password: hashedPassword,
+      code,
+      referenceCode
+  });
+
+  await newUser.save();
+
+  res.status(201).json({ message: 'User registered successfully', code });
+} catch (error) {
+  console.error('Error registering user:', error);
+  if (error.code === 11000) {
+    res.status(400).json({ message: 'Same aadhar and pan number' });
+  } else {
+    res.status(500).json({ message: 'Server error' });
+  }
+}
 });
 
               
