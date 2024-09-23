@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerController, loginController, testController, forgotPasswordController, getAllUserController } = require('../controllers/authController');
+const { registerController, loginController, testController, forgotPasswordController, getAllUserController, updateProfileController } = require('../controllers/authController');
 const { requireSignIn, isAdmin } = require('../middlewares/authMiddleware');
 const User = require('../models/userModel');
 
@@ -65,7 +65,7 @@ router.get('/user-count', async (req, res) => {
   }
 });
 
-
+  router.put('/profile',  requireSignIn, updateProfileController)
 
 
 module.exports = router;
