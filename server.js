@@ -1,26 +1,54 @@
-  const express = require('express');
-  const dotenv = require('dotenv');
-  const cors = require("cors");
-  const connectDB = require('./config/db.js');
-  const authRoutes = require("./routes/authRoute");
-  const multer = require("multer");
-  const fs = require('fs');
-  const path = require('path');
-  const { default: mongoose } = require('mongoose');
-  const overrideing = require("method-override");
-  const bodyParser = require('body-parser');
-  const User = require('./models/userModel');
-  const Counter = require('./models/Counter');
-  dotenv.config();
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require("cors");
+const connectDB = require('./config/db.js');
+const authRoutes = require("./routes/authRoute");
+const multer = require("multer");
+const fs = require('fs');
+const path = require('path');
+const { default: mongoose } = require('mongoose');
+const overrideing = require("method-override");
+const bodyParser = require('body-parser');
+const User = require('./models/userModel');
+const Counter = require('./models/Counter');
+dotenv.config();
 
-  connectDB(); 
+connectDB(); 
 
-  const app = express();
-  app.use(bodyParser.json())
-  app.use(express.static('public'));
+const app = express();
+app.use(bodyParser.json())
+app.use(express.static('public'));
 
-  app.use('/api', authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/Images', express.static(path.join(__dirname, 'public/Images')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
+
+
+
+const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
+
+const corsOptions = {
+origin: 'https://digitalbusinessplan.in',
+methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+app.use('/api', authRoutes);
+
+
+
+app.get('/api/user-count', async (req, res) => {
+try {
+  const count = await User.countDocuments();
+  res.json({ count });
+} catch (error) {
+  res.status(500).json({ error: 'An error occurred while counting users.' });
+}
+});
 
 
 const bcrypt = require('bcryptjs');
@@ -28,24 +56,25 @@ const crypto = require('crypto');
 
 // Function to generate a unique code
 async function generateUniqueCode() {
-  try {
-    const counter = await Counter.findOneAndUpdate(
-      { id: 'userCode' },
-      { $inc: { seq: 1 } },
-      { new: true, upsert: true }
-    );
-    
-    console.log('Counter:', counter); // આ લાઇન ઉમેરો
+try {
+  const counter = await Counter.findOneAndUpdate(
+    { id: 'userCode' },
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+  
+  console.log('Counter:', counter); // આ લાઇન ઉમેરો
 
-    const uniqueCode = `DBP-${counter.seq.toString().padStart(4, '0')}`;
-    return uniqueCode;
-  } catch (error) {
-    console.error('Error generating unique code:', error);
-    throw error;
-  }
+  const uniqueCode = `DBP-${counter.seq.toString().padStart(4, '0')}`;
+  return uniqueCode;
+} catch (error) {
+  console.error('Error generating unique code:', error);
+  throw error;
+}
 }
 
 
+// User Registration Endpoint
 app.post('/api/v1/auth/register', async (req, res) => {
 try {
   const { firstname, middlename, lastname, address, aadhaar, pan, photo, email, mobile, password, referenceCode } = req.body;
@@ -133,38 +162,28 @@ try {
 }
 });
 
-              
-  app.use(cors());
-  app.use(express.json());
+app.use(express.json());
 
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, 'public/Images'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      const dir = path.join(__dirname, 'public', 'Images');
+
+      if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+      }
+      cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+      const uniqueFilename = `${Date.now()}_${file.originalname}`;
+      cb(null, uniqueFilename);
+      req.body.photoURL = `/Images/${uniqueFilename}`; // Save relative path
+  }
 });
 
-const upload = multer({ storage: storage });
+    
+const upload = multer({ storage });
 
-  app.post('/upload', upload.single('file'), (req, res) => {
-      console.log("Body:", req.body);
-      console.log("File:", req.file);
-      const fileDetails = { 
-          originalname: req.file.originalname,
-          mimetype: req.file.mimetype,
-          size: req.file.size,
-          path: req.file.path,
-      };  
-      res.json({
-          message: 'File uploaded successfully',
-          file: fileDetails
-      });
-  });
-
-  
-  app.post('/uploadd', upload.single('file'), (req, res) => {
+app.post('/upload', upload.single('file'), (req, res) => {
     console.log("Body:", req.body);
     console.log("File:", req.file);
     const fileDetails = { 
@@ -174,44 +193,87 @@ const upload = multer({ storage: storage });
         path: req.file.path,
     };  
     res.json({
-        message: 'Aadhar uploaded successfully',
+        message: 'File uploaded successfully',
         file: fileDetails
     });
 });
 
-
-// In your Express server
-app.get('/api/v1/users', async (req, res) => {
-  try {
-    const users = await User.find(); // Adjust according to your database query
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch users' });
-  }
+app.post('/uploadAadhaar', (req, res) => {
+upload(req, res, function (err) {
+    if (err) {
+        console.error('Error uploading Aadhaar photo:', err);
+        return res.status(500).send("Error uploading file.");
+    }
+    const filePath = `/Images/${req.file.filename}`;
+    res.json({ message: "File uploaded successfully", file: { path: filePath } });
+});
 });
 
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'public/Images');
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
+//   }
+// });
 
-app.get('/api/v1/auth/get-user', async (req, res) => {
-  try {
+// const upload = multer({ storage: storage });
+
+// // Route to handle image upload
+// app.post('/upload', upload.single('photo'), (req, res) => {
+//   const photoPath = `/Images/${req.file.filename}`;
+//   // Save photoPath in the database
+//   res.json({ message: 'Image uploaded successfully', path: photoPath });
+// });
+// app.use('/public', express.static('public'));
+
+
+app.use("/api/v1/auth", authRoutes);
+
+app.get('/api/users', async (req, res) => {
+try {
+    // Fetch all users
     const users = await User.find();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching users' });
-  }
+
+    // Calculate reference count for each user
+    const usersWithReferenceCount = await Promise.all(users.map(async (user) => {
+        // Count how many users have this user's code as their reference
+        const referenceCount = await User.countDocuments({ referenceCode: user.code });
+
+        return {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            referenceCount, // Include the reference count
+        };
+    }));
+
+    res.json(usersWithReferenceCount);
+} catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+}
+});
+
+app.get('/api/v1/users', async (req, res) => {
+try {
+  const users = await User.find(); // Adjust according to your database query
+  res.json(users);
+} catch (error) {
+  res.status(500).json({ message: 'Failed to fetch users' });
+}
 });
 
 
-  app.use("/api/v1/auth", authRoutes);
+app.get("/", (req, res) => {
+    res.send("<h1>Welcome to ecommerce</h1>");
+});
 
-  app.get("/", (req, res) => {
-      res.send("<h1>Welcome to ecommerce</h1>");
-  });
+const PORT = process.env.PORT || 5000; 
 
-  const PORT = process.env.PORT || 5000; 
-
-  app.listen(PORT, () => {
-      console.log(`Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`);
-  });
+app.listen(PORT, () => {
+    console.log(`Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`);
+});
 
 
-  // mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
+// mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
