@@ -123,7 +123,7 @@ const JWT = require("jsonwebtoken");
       success: true,
       message: "login successfully",
       user: {
-       _id: user._id,
+            _id: user._id,
         firstname: user.firstname,
         photo: user.photo,
         middlename: user.middlename,
@@ -135,7 +135,7 @@ const JWT = require("jsonwebtoken");
         email: user.email,
         mobile: user.mobile,
         code: user.code,
-        role: user.role,
+        role: user.role
       },
       token,
     });
