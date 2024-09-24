@@ -18,7 +18,7 @@ connectDB();
 const app = express();
 app.use(bodyParser.json())
 app.use(express.static('public'));
-app.use('/public/Images', express.static('/opt/render/project/src/public/Images'));
+app.use('/public/Images', express.static(path.join(__dirname, 'public/Images')));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
