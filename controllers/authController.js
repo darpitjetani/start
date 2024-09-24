@@ -212,7 +212,7 @@ const JWT = require("jsonwebtoken");
 
 const updateProfileController = async (req, res) => {
   try {
-    const { firstname, middlename, lastname, address, aadhaar, pan, email, mobile, password } = req.body;
+    const { firstname, middlename, lastname, address, photo, aadhaar, pan, email, mobile, password } = req.body;
     const user = await userModel.findById(req.user._id);
     //password
     if (password && password.length < 6) {
@@ -226,6 +226,7 @@ const updateProfileController = async (req, res) => {
         middlename: middlename || user.middlename,
         lastname: lastname || user.lastname,
         address: address || user.address,
+        photo: photo || user.photo,
         aadhaar: aadhaar || user.aadhaar,
         pan: pan || user.pan,
         email: email || user.email,
