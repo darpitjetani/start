@@ -25,10 +25,6 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/public/Images', express.static('/opt/render/project/src/public/Images'));
 
 
-
-
-
-
 const allowedOrigins = ['https://digitalbusinessplan.in', 'https://example.com'];
 
 const corsOptions = {
