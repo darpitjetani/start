@@ -89,7 +89,15 @@ var userSchema = new mongoose.Schema({
     enum: ['active', 'inactive'],
     default: 'inactive',
   },
+  createdAt: {
+    type: Date,
+    default: Date.now, // Automatically set the date when a new user is created
+  },
 });
+
+userSchema.methods.getFormattedDate = function () {
+  return this.createdAt.toISOString().split('T')[0]; // Returns date in YYYY-MM-DD format
+};
 
 const User = mongoose.model('User', userSchema);
 
