@@ -102,6 +102,7 @@ try {
       address,
       aadhaar,
       pan,
+      aadhaarPhoto,
       photo,
       email,
       mobile,
@@ -148,6 +149,7 @@ try {
       aadhaar,
       pan,
       photo,
+      aadhaarPhoto,
       email,
       mobile,
       password: hashedPassword,
@@ -204,15 +206,19 @@ app.post('/upload', upload.single('file'), (req, res) => {
     });
 });
 
-app.post('/uploadAadhaar', (req, res) => {
-upload(req, res, function (err) {
-    if (err) {
-        console.error('Error uploading Aadhaar photo:', err);
-        return res.status(500).send("Error uploading file.");
-    }
-    const filePath = `/Images/${req.file.filename}`;
-    res.json({ message: "File uploaded successfully", file: { path: filePath } });
-});
+  app.post('/uploadd', upload.single('file'), (req, res) => {
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
+    const fileDetails = { 
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        path: req.file.path,
+    };  
+    res.json({
+        message: 'Aadhar uploaded successfully',
+        file: fileDetails
+    });
 });
 
 // const storage = multer.diskStorage({
