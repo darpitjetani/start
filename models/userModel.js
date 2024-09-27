@@ -43,7 +43,7 @@ var userSchema = new mongoose.Schema({
       type: String,
       required: false,
   }, 
-    aadhaarPhoto: {
+  aadhaarPhoto: {
     type: String,
     required: false,
   },
