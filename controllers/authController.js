@@ -4,7 +4,7 @@ const JWT = require("jsonwebtoken");
 
  const registerController = async (req, res) => {
   try {
-    const { firstname, middlename, lastname, address, aadhaar, pan, photo, aadhaarPhoto, email, mobile, password, code, referenceCode } = req.body;
+    const { firstname, middlename, lastname, address, aadhaar, pan, photo,aadhaarPhoto, email, mobile, password, code, referenceCode } = req.body;
     //validations
     if (!firstname) {
       return res.send({ error: "firstName is Required" });
