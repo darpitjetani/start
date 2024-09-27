@@ -67,5 +67,27 @@ router.get('/user-count', async (req, res) => {
 
   router.put('/profile',  requireSignIn, updateProfileController)
 
+  router.get('/registeredUsers', async (req, res) => {
+    try {
+      const { referenceCode } = req.query; // Get the referenceCode from the query string
+  
+      if (!referenceCode) {
+        return res.status(400).json({ message: "Reference code is required." });
+      }
+  
+      // Find all users whose referenceCode matches the provided referenceCode
+      const users = await User.find({ referenceCode });
+  
+      if (users.length === 0) {
+        return res.status(404).json({ message: "No users found for this reference code." });
+      }
+  
+      res.status(200).json(users); // Return the list of users
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error." });
+    }
+  });
+
 
 module.exports = router;
