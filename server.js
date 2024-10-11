@@ -16,14 +16,9 @@ dotenv.config();
 connectDB(); 
 
 const app = express();
-
-app.use('/public', express.static(path.join(__dirname, 'public')));
-
-
-
 app.use(bodyParser.json())
 app.use(express.static('public'));
-
+app.use('/public', express.static('public'));
 
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -209,19 +204,19 @@ app.post('/upload', upload.single('file'), (req, res) => {
     });
 });
 
-  app.post('/uploadd', upload.single('file'), (req, res) => {
-    console.log("Body:", req.body);
-    console.log("File:", req.file);
-    const fileDetails = { 
-        originalname: req.file.originalname,
-        mimetype: req.file.mimetype,
-        size: req.file.size,
-        path: req.file.path,
-    };  
-    res.json({
-        message: 'Aadhar uploaded successfully',
-        file: fileDetails
-    });
+app.post('/uploadd', upload.single('file'), (req, res) => {
+  console.log("Body:", req.body);
+  console.log("File:", req.file);
+  const fileDetails = { 
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      path: req.file.path,
+  };  
+  res.json({
+      message: 'Aadhar uploaded successfully',
+      file: fileDetails
+  });
 });
 
 // const storage = multer.diskStorage({
@@ -289,6 +284,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`);
 });
-
-
-// mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
