@@ -18,7 +18,7 @@
   const app = express();
   app.use(bodyParser.json())
   app.use(express.static('public'));
-
+app.use("/api/v1/auth", authRoutes);
   app.use('/api', authRoutes);
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -185,7 +185,6 @@ const upload = multer({ storage: storage });
     });
 });
 
-app.use("/api/v1/auth", authRoutes);
 
 app.get('/api/users', async (req, res) => {
 try {
