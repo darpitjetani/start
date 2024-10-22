@@ -127,7 +127,7 @@ const JWT = require("jsonwebtoken");
       success: true,
       message: "login successfully",
       user: {
-            _id: user._id,
+        _id: user._id,
         firstname: user.firstname,
         photo: user.photo,
         middlename: user.middlename,
@@ -208,55 +208,38 @@ const JWT = require("jsonwebtoken");
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error WHile Geting Orders",
+      message: "Error WHile Geting user",
       error,
     });
   }
-}; 
+};
 
-const updateProfileController = async (req, res) => {
+
+ const updateProfileController = async (req, res) => {
   try {
-    const { firstname, middlename, lastname, address, aadhaar, pan, email, mobile, password } = req.body;
+    const { firstname, middlename, lastname, address, aadhaar, pan, email, photo, mobile, password } = req.body;
     const user = await userModel.findById(req.user._id);
-
-    // Check for password validation
+    //password
     if (password && password.length < 6) {
-      return res.json({ error: "Password is required and must be at least 6 characters long" });
+      return res.json({ error: "Passsword is required and 6 character long" });
     }
-
     const hashedPassword = password ? await hashPassword(password) : undefined;
-
-    // Prepare the updated user data
-    const updateData = {
-      firstname: firstname || user.firstname,
-      middlename: middlename || user.middlename,
-      lastname: lastname || user.lastname,
-      address: address || user.address,
-      aadhaar: aadhaar || user.aadhaar,
-      pan: pan || user.pan,
-      email: email || user.email,
-      mobile: mobile || user.mobile,
-      password: hashedPassword || user.password,
-    };
-
-    // Handle photo upload
-    if (req.file) {
-      const fileName = Date.now() + path.extname(req.file.originalname); // Create a unique filename
-      const photoPath = `/opt/render/project/src/public/Images/${fileName}`;
-
-      // Move the uploaded file to the desired path
-      fs.renameSync(req.file.path, photoPath); // Handle any errors as necessary
-
-      updateData.photo = photoPath; // Update the photo path in the data
-    }
-
-    // Update user in the database
     const updatedUser = await userModel.findByIdAndUpdate(
       req.user._id,
-      updateData,
+      {
+        firstname: firstname || user.firstname,
+        middlename: middlename || user.middlename,
+        lastname: lastname || user.lastname,
+        address: address || user.address,
+        aadhaar: aadhaar || user.aadhaar,
+        pan: pan || user.pan,
+        email: email || user.email,
+        mobile: mobile || user.mobile,
+        photo: photo || user.photo,
+        password: hashedPassword || user.password,
+      },
       { new: true }
     );
-
     res.status(200).send({
       success: true,
       message: "Profile Updated Successfully",
@@ -266,7 +249,7 @@ const updateProfileController = async (req, res) => {
     console.log(error);
     res.status(400).send({
       success: false,
-      message: "Error While Updating Profile",
+      message: "Error WHile Update profile",
       error,
     });
   }
