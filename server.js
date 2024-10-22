@@ -11,8 +11,6 @@
   const bodyParser = require('body-parser');
   const User = require('./models/userModel');
   const Counter = require('./models/Counter');
-  const chatRoutes = require('./routes/chatRoutes');
-  const youtubeRoutes = require('./routes/youtubeRoutes');
   dotenv.config();
 
   connectDB(); 
@@ -208,11 +206,6 @@ app.get('/api/v1/auth/get-user', async (req, res) => {
     res.status(500).json({ message: 'Error fetching users' });
   }
 });
-
-
-
-app.use('/api/chat', chatRoutes);
-app.use('/api/youtube', youtubeRoutes);
 
 
 
