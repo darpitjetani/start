@@ -18,11 +18,12 @@
   const app = express();
   app.use(bodyParser.json())
   app.use(express.static('public'));
+ app.use("/api/v1/auth", authRoutes);
 
   app.use('/api', authRoutes);
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-app.use("/api/v1/auth", authRoutes);
+
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
@@ -44,39 +45,6 @@ async function generateUniqueCode() {
     throw error;
   }
 }
-
-app.get('/api/users', async (req, res) => {
-try {
-    // Fetch all users
-    const users = await User.find();
-
-    // Calculate reference count for each user
-    const usersWithReferenceCount = await Promise.all(users.map(async (user) => {
-        // Count how many users have this user's code as their reference
-        const referenceCount = await User.countDocuments({ referenceCode: user.code });
-
-        return {
-            firstname: user.firstname,
-            lastname: user.lastname,
-            referenceCount, // Include the reference count
-        };
-    }));
-
-    res.json(usersWithReferenceCount);
-} catch (error) {
-    console.error(error);
-    res.status(500).send('Server Error');
-}
-});
-
-app.get('/api/v1/users', async (req, res) => {
-try {
-  const users = await User.find(); // Adjust according to your database query
-  res.json(users);
-} catch (error) {
-  res.status(500).json({ message: 'Failed to fetch users' });
-}
-});
 
 
 // User Registration Endpoint
@@ -218,6 +186,27 @@ const upload = multer({ storage: storage });
     });
 });
 
+
+
+// In your Express server
+app.get('/api/v1/users', async (req, res) => {
+  try {
+    const users = await User.find(); // Adjust according to your database query
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch users' });
+  }
+});
+
+
+app.get('/api/v1/auth/get-user', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching users' });
+  }
+});
 
 
   app.get("/", (req, res) => {
