@@ -18,7 +18,7 @@
   const app = express();
   app.use(bodyParser.json())
   app.use(express.static('public'));
- app.use("/api/v1/auth", authRoutes);
+
 
   app.use('/api', authRoutes);
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -208,7 +208,7 @@ app.get('/api/v1/auth/get-user', async (req, res) => {
   }
 });
 
-
+ app.use("/api/v1/auth", authRoutes);
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
   });
