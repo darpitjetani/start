@@ -185,7 +185,7 @@ const upload = multer({ storage: storage });
     });
 });
 
-
+app.use("/api/v1/auth", authRoutes);
 
 app.get('/api/users', async (req, res) => {
 try {
@@ -220,9 +220,6 @@ try {
 }
 });
 
-
-
-  app.use("/api/v1/auth", authRoutes);
 
   app.get("/", (req, res) => {
       res.send("<h1>Welcome to ecommerce</h1>");
