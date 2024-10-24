@@ -515,6 +515,6 @@ app.listen(PORT, () => {
 });
 
 
-mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
+//mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
 
 //   // mongodb+srv://darshil:Darshil%402002@cluster0.szdeu42.mongodb.net //
