@@ -241,7 +241,11 @@ connectDB();
 
 const app = express();
 
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public'), {
+  maxAge: '1d', // Caches for 1 day
+  etag: false,
+}));
+
 
 
 
