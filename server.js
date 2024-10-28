@@ -454,6 +454,26 @@ app.post('/upload', upload.single('file'), (req, res) => {
     });
 });
 
+const aadhaarPhotoStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public/Images")); // Ensure this path exists
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const uploadAadhaarPhoto = multer({ storage: aadhaarPhotoStorage });
+
+// Route to handle Aadhaar photo upload
+app.post("/uploadAadhaar", uploadAadhaarPhoto.single("file"), (req, res) => {
+  if (req.file) {
+    res.status(200).json({ file: { path: `/public/Images/${req.file.filename}` } });
+  } else {
+    res.status(400).json({ error: "Failed to upload Aadhaar photo" });
+  }
+});
+
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     cb(null, 'public/Images');
