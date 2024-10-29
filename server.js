@@ -235,6 +235,7 @@ const overrideing = require("method-override");
 const bodyParser = require('body-parser');
 const User = require('./models/userModel');
 const Counter = require('./models/Counter');
+const youtubeRoutes = require('./routes/youtubeRoutes');
 dotenv.config();
 
 connectDB(); 
@@ -528,7 +529,7 @@ try {
   res.status(500).json({ message: 'Failed to fetch users' });
 }
 });
-
+app.use('/api/youtube', youtubeRoutes);
 
 app.get("/", (req, res) => {
     res.send("<h1>Welcome to ecommerce</h1>");
